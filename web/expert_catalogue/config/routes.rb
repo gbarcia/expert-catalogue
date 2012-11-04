@@ -1,4 +1,15 @@
 ExpertCatalogue::Application.routes.draw do
+  devise_for :users
+
+  resources :products
+
+  namespace :api do
+    devise_for :users
+    resources :products, :only=>[:index, :show]
+  end
+
+  root :to => "products#index"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
