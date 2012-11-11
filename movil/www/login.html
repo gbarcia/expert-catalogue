@@ -1,65 +1,144 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <!-- Change this if you want to allow scaling -->
-    <meta name="viewport" content="width=default-width; user-scalable=no" />
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/chui.css">
+    <style type="text/css" media="all">
+        view {
+            background-color: rgba(0, 0, 0, 0.65)
+        }
+        uibutton[ui-implements=back]:before,
+        uibutton[ui-implements=back].disabled.touched:before {
+            border-color: #262626 !important;
+        }
 
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        navbar > uibutton[ui-implements=back]::before {
+            background-color: #555;
+        }
 
-    <title>Demo</title>
-    <!-- iPad/iPhone specific css below, add after your main css >
-    <link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />
-    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />
-    -->
-    <!-- If you application is targeting iOS BEFORE 4.0 you MUST put json2.js from http://www.JSON.org/json2.js into your www directory and include it here -->
-    <script type="text/javascript" charset="utf-8" src="cordova-2.1.0.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/jquery.min.js"></script>
+        tableheader {
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0px 1px 1px #000;
+        }
+
+        tableview[ui-implements=form] > tablecell input {
+            height: 24px;
+            position: relative;
+            top: -1px;
+            font-size: 14px;
+            float: left;
+            border: none;
+        }
+
+        /* Set widths for inputs based on orientation: */
+        @media screen and (orientation:portrait) {
+            tableview[ui-implements=form] > tablecell input {
+                width: 150px !important;
+            }
+        }
+
+        @media screen and (orientation:landscape) {
+            tableview[ui-implements=form] > tablecell input {
+                width: 67% !important;
+            }
+        }
+
+        tableview[ui-implements=form] > tablecell > label {
+            display: block;
+            width: 80px;
+            margin-right: 10px;
+            font-size: 14px;
+            position: relative;
+            top: 4px;
+            float: left;
+        }
+
+        /* Set background color for invalid inputs: */
+        input:focus:invalid {
+            background-color: rgba(225, 0, 0, 0.05);
+        }
+    </style>
+    <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/core.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/auth.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/ui.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/products.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/login.js"></script>
-    <script type="text/javascript" charset="utf-8">
 
-      // If you want to prevent dragging, uncomment this section
-      function preventBehavior(e)
-      {
-          e.preventDefault();
-      };
 
-      document.addEventListener("touchmove", preventBehavior, false);
+    <script src="js/jquery-1.7.2.js"></script>
+    <script src="js/iscroll.js"></script>
+    <script src="js/chui.js"></script>
+    <script type="text/javascript">
 
-      function onBodyLoad()
-      {
-        document.addEventListener("deviceready",onDeviceReady,false);
-      }
+        // If you want to prevent dragging, uncomment this section
+        function preventBehavior(e) {
+            e.preventDefault();
+        }
 
-      /* When this function is called, PhoneGap has been initialized and is ready to roll */
-      function onDeviceReady()
-      {
-        // do your thing!
-      }
 
+        document.addEventListener("touchmove", preventBehavior, false);
+
+        function onBodyLoad() {
+            document.addEventListener("deviceready", onDeviceReady, false);
+        }
+
+        /* When this function is called, PhoneGap has been initialized and is ready to roll */
+        function onDeviceReady() {
+            // do your thing!
+        }
+
+        $(function() {
+            requireNoSession();
+            $('#login').bind('submit', function() {
+                onSubmit($(this));
+                return false;
+            });
+
+            $('#loginSubmit').bind('click', function() {
+                var form_obj = $(this).closest('form');
+                onSubmit(form_obj);
+                return false;
+            });
+        });
     </script>
-  </head>
-  <body onload="onBodyLoad()">
-    <div id="content" style="display:none;">
-      <form accept-charset="UTF-8" action="api/users/sign_in?_method=POST" method="post" id="login">
-        <div class='form_errors'></div>
-        <fieldset id='login_form'>
-          <div class='form_row'>
-            <label for="Your_Email:">Your email:</label>
-            <input id="user_email" name="user_login[email]" type="text" />
-          </div>
-          <div class='form_row'>
-            <label for="Password:">Password:</label>
-            <input id="user_password" name="user_login[password]" type="password" />
-          </div>
-          <div class='form_row button_row'>
-            <input id="user_session_submit" name="commit" type="submit" value="Sign in" />
-          </div>
-        </fieldset>
-      </form>
-    </div>
-  </body>
+</head>
+<body onload="onBodyLoad()">
+<app>
+    <view ui-background-style="slanted-left-equal" id="main" ui-navigation-status="current">
+        <navbar class="ui-custom-tint">
+            <h1 style="display: block; width: 222px; ">Login</h1>
+        </navbar>
+        <form accept-charset="UTF-8" action="api/users/sign_in?_method=POST" method="post" id="login">
+            <subview ui-associations="withNavBar" style="overflow: hidden; " ui-navigation-status="upcoming"
+                     ui-child-position="3">
+                <scrollpanel
+                        style="-webkit-transition: -webkit-transform 0ms; -webkit-transform-origin: 0px 0px; -webkit-transform: translate3d(0px, 0px, 0px); ">
+                    <tableview ui-implements='form' ui-kind="grouped">
+                        <tableheader>You must log in</tableheader>
+                        <tablecell>
+                            <label for='userName'>Mail:</label>
+                            <input id="userName" type="text" name="user_login[email]" autocapitalize="off" autocorrect="off"
+                                   required>
+                        </tablecell>
+                        <tablecell>
+                            <label for='password'>Password:</label>
+                            <input id="password" type="password" name="user_login[password]" autocapitalize="off"
+                                   autocorrect="off"
+                                   required>
+                        </tablecell>
+                    </tableview>
+                    <uibutton ui-kind="action" id="loginSubmit">Login</uibutton>
+                    <uibutton ui-kind="rounded-rectangle" id="goToForgotPassword">Forgot your password?</uibutton>
+                </scrollpanel>
+            </subview>
+        </form>
+    </view>
+</app>
+</body>
 </html>
-

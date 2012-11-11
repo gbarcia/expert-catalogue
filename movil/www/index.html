@@ -1,49 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <!-- Change this if you want to allow scaling -->
-    <meta name="viewport" content="width=default-width; user-scalable=no" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-startup-image" href="startup.png">
+    <link rel="apple-touch-icon" href="chocolatechip-icon.png"/>
+    <link rel="shortcut icon" href="favicon.ico">
+    <title>Expert Catalogue</title>
+    <link rel="stylesheet" href="css/chui.css">
+    <style type="text/css">
+            /* Local Styles Here */
+        #main {
+            background-color: rgba(128, 96, 0, 0.5);
+        }
 
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        #main navbar {
+            background-color: rgba(0, 0, 0, 0.65);
+        }
 
-    <title>Demo</title>
-    <!-- iPad/iPhone specific css below, add after your main css >
-    <link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />
-    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />
-    -->
-    <!-- If you application is targeting iOS BEFORE 4.0 you MUST put json2.js from http://www.JSON.org/json2.js into your www directory and include it here -->
-    <script type="text/javascript" charset="utf-8" src="cordova-2.1.0.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/jquery.min.js"></script>
+        subview:nth-of-type(1) {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        subview:nth-of-type(2) {
+            background: rgba(55, 0, 0, 0.2);
+        }
+
+        subview.selected {
+            z-index: 100000;
+            -webkit-transform: translate3d(0, 0, 0);
+        }
+
+        subview.unselected {
+            -webkit-transform: translate3d(100%, 0, 0);
+        }
+
+        uibutton[ui-implements=back]:before,
+        uibutton[ui-implements=back].disabled.touched:before {
+            border-color: #262626 !important;
+        }
+
+        navbar > uibutton[ui-implements=back]::before {
+            background-color: #555;
+
+    </style>
+    <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/core.js"></script>
     <script type="text/javascript" charset="utf-8" src="js/auth.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/ui.js"></script>
-    <script type="text/javascript" charset="utf-8" src="js/dashboard.js"></script>
-    <script type="text/javascript" charset="utf-8">
+    <script type="text/javascript" charset="utf-8" src="js/products.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/noClickDelay.js"></script>
 
-        // If you want to prevent dragging, uncomment this section
-        function preventBehavior(e)
-        {
+    <script src="js/jquery-1.7.2.js"></script>
+    <script src="js/iscroll.js"></script>
+    <script src="js/chui.js"></script>
+    <script type="text/javascript">
+        /* Local JavaScript Here */
+
+        function preventBehavior(e) {
             e.preventDefault();
-        };
+        }
 
         document.addEventListener("touchmove", preventBehavior, false);
 
-        function onBodyLoad()
-        {
-            document.addEventListener("deviceready",onDeviceReady,false);
+        function onBodyLoad() {
+            document.addEventListener("deviceready", onDeviceReady, false);
+            presentProducts();
         }
 
         /* When this function is called, PhoneGap has been initialized and is ready to roll */
-        function onDeviceReady()
-        {
-            // do your thing!
+        function onDeviceReady() {
+            requireSession();
         }
+
+        $(function () {
+            $('#logout').bind('click', function () {
+                logout();
+                return false;
+            });
+
+
+            $('app').UIActivityIndicator({modal:true, modalMessage:'Loading...'});
+            setTimeout(function () {
+                $('app').RemoveUIAcitivityIndicator();
+            }, 500);
+            $("#main").UITabBar();
+        });
 
     </script>
 </head>
 <body onload="onBodyLoad()">
-<div id="content" style="display:none;">
-    <h1>ExpertCatalgoue</h1>
-</div>
+<app>
+    <view id="main" ui-background-style="slanted-left-equal" ui-navigation-status="current">
+        <navbar class="ui-custom-tint">
+            <h1 ui-bar-alignment="center">Expert Catalogue</h1>
+            <uibutton id="logout" class="ui-custom-tint" style="background-color: #555" ui-bar-align="left"
+                      ui-implements="back">
+                <label>Logout</label>
+            </uibutton>
+        </navbar>
+        <subview ui-associations="withNavBar withTabBar">
+            <scrollpanel>
+                <tableview ui-kind="grouped" id='table-info'>
+                </tableview>
+            </scrollpanel>
+        </subview>
+        <subview ui-associations="withNavBar withTabBar">
+            <scrollpanel>
+                <tableview ui-kind="grouped">
+                    <tablecell>
+                        <celltitle>Gerardo Barcia</celltitle>
+                    </tablecell>
+                    <tablecell>
+                        <celltitle>gerardobarciap@gmail.com</celltitle>
+                    </tablecell>
+                    <tablecell>
+                        <celltitle>www.gerardobarcia.com</celltitle>
+                    </tablecell>
+                </tableview>
+            </scrollpanel>
+        </subview>
+        <tabbar ui-selected-tab="0">
+            <uibutton ui-implements="tab">
+                <icon style="-webkit-mask-image: url(img/icons/refresh.svg);"></icon>
+                <label>Products</label>
+            </uibutton>
+            <uibutton ui-implements="tab">
+                <icon style="-webkit-mask-image: url(img/icons/info.svg);"></icon>
+                <label>Info</label>
+            </uibutton>
+        </tabbar>
+    </view>
+</app>
 </body>
 </html>

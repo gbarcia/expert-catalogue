@@ -1,73 +1,49 @@
-(function( $ ) {
+function submit(ajax_url, ajax_data, callback) {
+    var auth_token = '';
+    if (isAuthenticate()) {
+        auth_token = getToken();
+    }
+    $.ajax({
 
-  var Core = Core || {};
+        type: "GET",
 
-  Core = {
+        dataType: "jsonp",
 
+        url: "http://expertcatalogue.herokuapp.com/" + ajax_url,
 
-    init: function (){
+        cache: false,
 
-    },
+        //data: ajax_data,
+        data: 'auth_token=' + auth_token + '&' + ajax_data,
 
-    api: {
+        success: function(data) {
+            alert('exito core');
+            if (typeof callback.onSuccess == 'function') {
+                callback.onSuccess.call(this, data);
+            }
+        },
 
-      submit: function( ajax_url, ajax_data, callback ){
+        error: function(data, status) {
+            alert('error core');
+            if (typeof callback.onError == 'function') {
+                if (data.status == '403') {
+                    return callback.onDenied.call(this, data);
+                }
+                callback.onError.call(this, data);
+            }
+        },
 
-        var auth_token = '';
-        if( Core.auth.isAuthenticated() ) {
-          auth_token = Core.auth.authToken.get();
+        complete: function(data) {
+            if (typeof callback.onComplete == 'function') {
+                callback.onComplete.call(this, data);
+            }
+        },
+
+        denied: function(data) {
+            if (typeof callback.onDenied == 'function') {
+                callback.onDenied.call(this, data);
+            }
         }
 
-        $.ajax({
-
-          type: "GET",
-
-          dataType: "jsonp",
-
-          url: "http://localhost:3000/" + ajax_url,
-
-          cache: false,
-
-          //data: ajax_data,
-          data: 'auth_token='+ auth_token + '&' + ajax_data,
-
-          success: function(data) {
-            if(typeof callback.onSuccess == 'function'){
-              callback.onSuccess.call(this, data);
-            }
-          },
-
-          error: function(data,status){
-            if(typeof callback.onError == 'function'){
-              if(data.status == '403') {
-                return callback.onDenied.call(this, data);
-              }
-              callback.onError.call(this, data);
-            }
-          },
-
-          complete: function(data){
-            if(typeof callback.onComplete == 'function'){
-              callback.onComplete.call(this, data);
-            }
-          },
-
-          denied: function(data){
-            if(typeof callback.onDenied == 'function'){
-              callback.onDenied.call(this, data);
-            }
-          }
-
-        });
-
-      }
-
-    }
-
-  };
-
-  $( Core.init );
-
-  window.Core = Core;
-
-})(jQuery);
+    });
+}

@@ -1,62 +1,55 @@
-(function( $ ) {
-
-  var Core = window.Core || Core || {};
-
-  Core.login = {
-
-    init: function (){
-      Core.auth.requireNoSession();
-      Core.ui.showView();
-      Core.login.bindEvents();
-    },
-
-    bindEvents: function() {
-      $('#login').bind('submit',function(){
-        Core.login.authenticate.onSubmit($(this));
-        return false;
-      });
-
-      $('#user_session_submit').bind('click',function(){
-        var form_obj = $(this).closest('form');
-        Core.login.authenticate.onSubmit( form_obj );
-        return false;
-      });
-
-    },
-
-    authenticate: {
-      onSubmit: function(form_obj) {
-        var ajax_url = form_obj.attr('action'),
+function onSubmit(form_obj) {
+    var ajax_url = form_obj.attr('action'),
             ajax_data = form_obj.serialize();
-        Core.api.submit( ajax_url, ajax_data,
-          {
-            onSuccess: Core.login.authenticate.onSuccess,
-            onError: Core.login.authenticate.onError,
-            onDenied: Core.login.authenticate.onDenied,
-            onComplete: Core.login.authenticate.onComplete
-          }
-        );
-      },
 
-      onSuccess: function(data) {
-        Core.auth.authToken.set(data.access_token, 30);
-        window.location = 'index.html';
-      },
+    $.ajax({
 
-      onError: function(data) {
-      },
+        type: "GET",
 
-      onDenied: function(data) {
-      },
+        dataType: "jsonp",
 
-      onComplete: function(data) {
-      }
+        //jsonp: 'jsoncallback',
+
+        timeout: 5000,
+
+        url: "http://expertcatalogue.herokuapp.com/" + ajax_url,
+
+        data: ajax_data,
+
+        cache: false,
+
+        success: function(data) {
+            setAuthToken(data.auth_token, 30);
+            window.location = 'index.html';
+        },
+
+        error: function(data, status) {
+            navigator.notification.alert(
+
+                    'Login Incorrect! Try Again!',
+
+                    null,
+
+                    'Error',
+
+                    'Done'
+
+                    );
+
+        },
+
+        complete:
+                function(data) {
+
+                }
+
+        ,
+
+        denied: function(data) {
+            alert('denied');
+        }
+
     }
-
-  };
-
-  $( Core.login.init );
-
-  window.Core = Core;
-
-})(jQuery);
+            )
+            ;
+}

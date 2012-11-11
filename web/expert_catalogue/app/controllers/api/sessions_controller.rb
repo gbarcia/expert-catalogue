@@ -30,6 +30,6 @@ class Api::SessionsController < Devise::SessionsController
 
   def invalid_login_attempt
     warden.custom_failure!
-    render :json=> {:success=>false, :message=>"Error with your login or password"}, :status=>401,:callback => params[:callback]
+    render :json=> {:success=>false, :message=>"Error with your login or password"}, :status=>401, :callback => params[:callback]
   end
 end
